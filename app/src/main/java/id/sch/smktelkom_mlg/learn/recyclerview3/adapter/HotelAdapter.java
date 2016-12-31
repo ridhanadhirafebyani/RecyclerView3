@@ -1,5 +1,7 @@
 package id.sch.smktelkom_mlg.learn.recyclerview3.adapter;
 
+import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +14,16 @@ import java.util.ArrayList;
 import id.sch.smktelkom_mlg.learn.recyclerview3.R;
 import id.sch.smktelkom_mlg.learn.recyclerview3.model.Hotel;
 
-/**
- * Created by Ridha Nadhira F on 14-Nov-16.
- */
+
 
 public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> {
 
+    IHotelAdapter mIHotelAdapter;
     ArrayList<Hotel> hotelList;
 
-    public HotelAdapter(ArrayList<Hotel> hotelList) {
+    public HotelAdapter(Context context, ArrayList<Hotel> hotelList) {
         this.hotelList = hotelList;
+        mIHotelAdapter = (IHotelAdapter) context;
     }
 
     @Override
@@ -30,6 +32,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
+
     }
 
     @Override
@@ -37,7 +40,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> 
         Hotel hotel = hotelList.get(position);
         holder.tvJudul.setText(hotel.judul);
         holder.tvDeskripsi.setText(hotel.deskripsi);
-        holder.ivFoto.setImageDrawable(hotel.foto);
+        holder.ivFoto.setImageURI(Uri.parse(hotel.foto));
     }
 
     @Override
@@ -47,6 +50,9 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> 
         return 0;
     }
 
+    public interface IHotelAdapter {
+        void doClick(int pos);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFoto;
         TextView tvJudul;
@@ -57,6 +63,14 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> 
             ivFoto = (ImageView) itemView.findViewById(R.id.imageView);
             tvJudul = (TextView) itemView.findViewById(R.id.textViewJudul);
             tvDeskripsi = (TextView) itemView.findViewById(R.id.textViewDeskripsi);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mIHotelAdapter.doClick(getAdapterPosition());
+                }
+            });
         }
+
     }
 }
